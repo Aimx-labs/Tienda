@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Mi Tienda</string>
+    <string name="cart_title">Cart</string>
+    <string name="cart_subtitle">Review your curated selection of atelier pieces.</string>
+    <string name="promo_code_label">PROMO CODE</string>
+    <string name="promo_code_placeholder">Enter code</string>
+    <string name="apply_button">Apply</string>
+    <string name="order_summary_title">Order Summary</string>
+    <string name="app_brand_name">The Ethereal Atelier</string>
+    <string name="nav_home">HOME</string>
+    <string name="nav_categories">CATEGORIES</string>
+    <string name="nav_cart">CART</string>
+    <string name="nav_profile">PROFILE</string>
+    <string name="content_desc_search">Search</string>
+    <string name="content_desc_profile">Profile</string>
+    <string name="content_desc_delete">Delete item</string>
+    <string name="content_desc_decrease">Decrease quantity</string>
+    <string name="content_desc_increase">Increase quantity</string>
+</resources>
