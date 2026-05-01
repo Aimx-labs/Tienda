@@ -1,0 +1,105 @@
+package com.example.mitienda.composables
+
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+
+@Composable
+fun AppNavegacion() {
+    val navController = rememberNavController()
+
+    Scaffold(
+        bottomBar = { BarraNavegacionReal(navController) }
+    ) { paddingValues ->
+        NavHost(
+            navController = navController,
+            startDestination = "carrito", // Para pruebas, pero puedes cambiarlo a "principal"
+            modifier = Modifier.padding(paddingValues)
+        ) {
+            composable("principal") {
+                PantallaPrincipal(
+                    onProductoClick = { navController.navigate("detalles_producto") }
+                )
+            }
+            composable("categorias") {
+                PantallaCategorias()
+            }
+            composable("carrito") {
+                ListaCompras(
+                    onIrAPagar = { navController.navigate("confirmacion_pago") }
+                )
+            }
+            composable("perfil") {
+                PantallaPerfil()
+            }
+            composable("detalles_producto") {
+                PantallaDetallesProducto(
+                    onBack = { navController.popBackStack() }
+                )
+            }
+            composable("confirmacion_pago") {
+                PantallaConfirmacionPago(
+                    onNavigateHome = {
+                        navController.navigate("principal") {
+                            popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                        }
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun BarraNavegacionReal(navController: NavHostController) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val rutaActual = navBackStackEntry?.destination?.route
+
+    val VerdeOscuro = Color(0xFF135041)
+    val FondoCantidad = Color(0xFFE8F0ED)
+
+    NavigationBar(containerColor = Color.White, tonalElevation = 8.dp) {
+        NavigationBarItem(
+            icon = { Icon(Icons.Default.Home, null) },
+            label = { Text("Home") },
+            selected = rutaActual == "principal",
+            onClick = { navController.navigate("principal") },
+            colors = NavigationBarItemDefaults.colors(selectedIconColor = VerdeOscuro, indicatorColor = FondoCantidad)
+        )
+        NavigationBarItem(
+            icon = { Icon(Icons.Default.List, null) },
+            label = { Text("Categories") },
+            selected = rutaActual == "categorias",
+            onClick = { navController.navigate("categorias") },
+            colors = NavigationBarItemDefaults.colors(selectedIconColor = VerdeOscuro, indicatorColor = FondoCantidad)
+        )
+        NavigationBarItem(
+            icon = { Icon(Icons.Default.ShoppingCart, null) },
+            label = { Text("Cart") },
+            selected = rutaActual == "carrito",
+            onClick = { navController.navigate("carrito") },
+            colors = NavigationBarItemDefaults.colors(selectedIconColor = Color.White, indicatorColor = VerdeOscuro)
+        )
+        NavigationBarItem(
+            icon = { Icon(Icons.Default.Person, null) },
+            label = { Text("Profile") },
+            selected = rutaActual == "perfil",
+            onClick = { navController.navigate("perfil") },
+            colors = NavigationBarItemDefaults.colors(selectedIconColor = VerdeOscuro, indicatorColor = FondoCantidad)
+        )
+    }
+}

@@ -39,7 +39,7 @@ fun TarjetaElemento(articulo: Articulo) {
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Imagen cargada de Internet con Coil
+            // Imagen cargada de Internet con Coil (Importada correctamente arriba)
             AsyncImage(
                 model = articulo.imagenUrl,
                 contentDescription = "Imagen de ${articulo.nombre}",
@@ -114,7 +114,7 @@ fun TarjetaElemento(articulo: Articulo) {
 
                     // Precio
                     Text(
-                        text = "$${articulo.precio}",
+                        text = "€${articulo.precio}",
                         fontWeight = FontWeight.ExtraBold,
                         fontSize = 18.sp,
                         color = VerdeOscuro
@@ -123,14 +123,4 @@ fun TarjetaElemento(articulo: Articulo) {
             }
         }
     }
-}
-
-@Composable
-fun AsyncImage(
-    model: String,
-    contentDescription: String,
-    modifier: Modifier,
-    contentScale: ContentScale
-) {
-    TODO("Not yet implemented")
 }

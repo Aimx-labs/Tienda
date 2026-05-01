@@ -1,173 +1,244 @@
 package com.example.mitienda.composables
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.mitienda.R
-import com.example.mitienda.ui.theme.MiTiendaTheme
 
-// Colores
-val ColorBoy = Color(0xFF8BC34A)
-val ColorGirl = Color(0xFFF48FB1)
-val ColorFondo = Color(0xFFFFFDF7)
-val ColorBotonAzul = Color(0xFF4FC3F7)
+// Colores basados en tu diseño "The Ethereal Atelier"
+val FondoPerfil = Color(0xFFF4F6F4)
+val VerdeEthereal = Color(0xFF005C4A)
+val GrisFondoTarjeta = Color(0xFFFFFFFF)
+val TextoPrincipal = Color(0xFF1A1A1A)
+val TextoSecundario = Color(0xFF757575)
+val RojoAlerta = Color(0xFFB3261E)
 
 @Composable
-fun PantallaCrearPerfil() {
-    //Estados
-    var generoSeleccionado by remember { mutableStateOf("Boy") }
-    var edadSeleccionada by remember { mutableIntStateOf(5) }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(ColorFondo)
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // Encabezado
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Atrás",
-                tint = ColorBotonAzul,
-                modifier = Modifier.size(20.dp)
-            )
-            Text(
-                text = "Crear Perfil",
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = Color.DarkGray
-            )
-        }
-
-        Spacer(modifier = Modifier.height(30.dp))
-
-        //Genero
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            BotonGenero(
-                label = "Niño",
-                color = ColorBoy,
-                isSelected = generoSeleccionado == "Boy",
-                modifier = Modifier.weight(1f),
-                onClick = { generoSeleccionado = "Boy" }
-            )
-            BotonGenero(
-                label = "Niña",
-                color = ColorGirl,
-                isSelected = generoSeleccionado == "Girl",
-                modifier = Modifier.weight(1f),
-                onClick = { generoSeleccionado = "Girl" }
-            )
-        }
-        // Ilustración Central
-        Box(
+fun PantallaPerfil() {
+    Scaffold(
+        containerColor = FondoPerfil,
+        topBar = { TopBarPerfilEthereal() }
+    ) { paddingValues ->
+        Column(
             modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(),
-            contentAlignment = Alignment.Center
+                .fillMaxSize()
+                .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.astral),
-                contentDescription = "Avatar",
-                modifier = Modifier.size(280.dp)
-            )
-        }
-        //Edad
-        Text(
-            text = "Selecciona Tu Edad",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Gray
-        )
-        //Cambio De Estado
-        SelectorEdadHorizontal(
-            edadSeleccionada = edadSeleccionada,
-            onEdadSelected = { nuevaEdad -> edadSeleccionada = nuevaEdad }
-        )
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Botón Guardar
-        Button(
-            onClick = {
-                println("Guardando: Perfil de $generoSeleccionado con $edadSeleccionada años")
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = ColorBotonAzul),
-            shape = RoundedCornerShape(16.dp),
-            elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
-        ) {
-            Text(text = "Guardar", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(32.dp))
+            CabeceraPerfil()
+            Spacer(modifier = Modifier.height(32.dp))
+            SeccionMisPedidos()
+            Spacer(modifier = Modifier.height(24.dp))
+            MenuOpciones()
+            Spacer(modifier = Modifier.height(40.dp))
+            BotonCerrarSesion()
+            Spacer(modifier = Modifier.height(100.dp)) // Espacio para el Bottom Navigation
         }
     }
 }
 
 @Composable
-fun BotonGenero(
-    label: String,
-    color: Color,
-    isSelected: Boolean,
-    modifier: Modifier,
-    onClick: () -> Unit //Funcionamiento Del Click
-) {
-    // Usamos el alfa para que el botón no seleccionado se vea más claro
-    val backgroundOpacity = if (isSelected) 1f else 0.4f
-
-    Surface(
-        color = color.copy(alpha = backgroundOpacity),
-        shape = RoundedCornerShape(24.dp),
-        modifier = modifier
-            .height(50.dp)
-            .clickable { onClick() } // Detecta el toque
+fun TopBarPerfilEthereal() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp, vertical = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(contentAlignment = Alignment.Center) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+        Icon(
+            imageVector = Icons.Default.Search,
+            contentDescription = "Buscar",
+            tint = VerdeEthereal,
+            modifier = Modifier.size(24.dp)
+        )
+
+        Text(
+            text = "The Ethereal Atelier",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = VerdeEthereal
+        )
+
+        // Mini Avatar Placeholder
+        Box(
+            modifier = Modifier
+                .size(32.dp)
+                .clip(CircleShape)
+                .background(Color.DarkGray)
+        )
+    }
+}
+
+@Composable
+fun CabeceraPerfil() {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(contentAlignment = Alignment.BottomCenter) {
+            // Avatar Circular Grande
+            Box(
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape)
+                    .background(Color.LightGray)
+                    .border(3.dp, VerdeEthereal, CircleShape)
+            )
+            // Badge de Nivel (GOLD)
+            Box(
+                modifier = Modifier
+                    .offset(y = 12.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(VerdeEthereal)
+                    .padding(horizontal = 12.dp, vertical = 4.dp)
             ) {
-                Icon(Icons.Default.Face, contentDescription = null, tint = Color.White)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = label, color = Color.White, fontWeight = FontWeight.Bold)
+                Text(
+                    text = "GOLD",
+                    color = Color.White,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
-            if (isSelected) {
-                Icon(
-                    imageVector = Icons.Default.CheckCircle,
-                    contentDescription = null,
-                    tint = Color.White,
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "Jonathan Alberto",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.ExtraBold,
+            color = TextoPrincipal
+        )
+
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 4.dp)) {
+            Icon(
+                imageVector = Icons.Default.Star,
+                contentDescription = null,
+                tint = VerdeEthereal,
+                modifier = Modifier.size(16.dp)
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                text = "Miembro Gold",
+                fontSize = 14.sp,
+                color = VerdeEthereal,
+                fontWeight = FontWeight.Medium
+            )
+        }
+    }
+}
+
+@Composable
+fun SeccionMisPedidos() {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Mis Pedidos",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = TextoPrincipal
+            )
+            Text(
+                text = "Ver todos",
+                fontSize = 14.sp,
+                color = VerdeEthereal,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.clickable { /* Acción ver todos */ }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = GrisFondoTarjeta),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Imagen del pedido (Placeholder)
+                Box(
                     modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(4.dp)
-                        .size(18.dp)
+                        .size(64.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0xFF2C3E35))
+                )
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "PEDIDO #8821",
+                            fontSize = 12.sp,
+                            color = TextoSecundario,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color(0xFFDCE8E2))
+                                .padding(horizontal = 8.dp, vertical = 2.dp)
+                        ) {
+                            Text(
+                                text = "En camino",
+                                fontSize = 10.sp,
+                                color = VerdeEthereal,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Seda Orgánica & Lino",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = TextoPrincipal
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = "Entrega estimada:\nMañana, 14:00",
+                        fontSize = 12.sp,
+                        color = TextoSecundario
+                    )
+                }
+
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = "Detalles",
+                    tint = Color.LightGray
                 )
             }
         }
@@ -175,60 +246,107 @@ fun BotonGenero(
 }
 
 @Composable
-fun SelectorEdadHorizontal(edadSeleccionada: Int, onEdadSelected: (Int) -> Unit) {
-    val edades = (1..12).toList()
+fun MenuOpciones() {
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        ItemMenuEthereal(
+            icono = Icons.Default.LocationOn,
+            titulo = "Direcciones de Envío",
+            subtitulo = "2 direcciones guardadas"
+        )
+        ItemMenuEthereal(
+            icono = Icons.Default.ShoppingCart, // Placeholder para tarjeta
+            titulo = "Métodos de Pago",
+            subtitulo = "Visa terminada en **** 4492"
+        )
+        ItemMenuEthereal(
+            icono = Icons.Default.Notifications,
+            titulo = "Notificaciones",
+            subtitulo = "Ofertas y estado de pedidos",
+            tieneNotificacion = true
+        )
+        ItemMenuEthereal(
+            icono = Icons.Default.Face, // Placeholder para soporte
+            titulo = "Soporte",
+            subtitulo = "Ayuda, FAQ y contacto directo"
+        )
+    }
+}
 
-    LazyRow(
+@Composable
+fun ItemMenuEthereal(
+    icono: ImageVector,
+    titulo: String,
+    subtitulo: String,
+    tieneNotificacion: Boolean = false
+) {
+    Card(
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = GrisFondoTarjeta),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
+            .clickable { /* Acción del menú */ }
     ) {
-        items(edades) { edad ->
-            val esTarget = edad == edadSeleccionada
-            Text(
-                text = edad.toString(),
-                fontSize = if (esTarget) 48.sp else 28.sp,
-                fontWeight = FontWeight.Black,
-                color = if (esTarget) Color.DarkGray else Color.LightGray.copy(alpha = 0.5f),
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .clickable { onEdadSelected(edad) } // Al presionar una opcion se resalta
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(Color(0xFFF4F6F4)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(imageVector = icono, contentDescription = null, tint = VerdeEthereal, modifier = Modifier.size(20.dp))
+            }
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = titulo, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = TextoPrincipal)
+                Text(text = subtitulo, fontSize = 12.sp, color = TextoSecundario)
+            }
+
+            if (tieneNotificacion) {
+                Box(modifier = Modifier.size(8.dp).clip(CircleShape).background(RojoAlerta))
+                Spacer(modifier = Modifier.width(8.dp))
+            }
+
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+                tint = Color.LightGray
             )
         }
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun PantallaCrearPerfilPreview() {
-    MiTiendaTheme {
-        PantallaCrearPerfil()
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun BotonGeneroPreview() {
-    MiTiendaTheme {
-        BotonGenero(
-            label = "Boy",
-            color = ColorBoy,
-            isSelected = true,
-            modifier = Modifier.width(150.dp),
-            onClick = {}
+fun BotonCerrarSesion() {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.clickable { /* Lógica de cerrar sesión */ }
+    ) {
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+            contentDescription = "Cerrar Sesión",
+            tint = RojoAlerta
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = "Cerrar Sesión",
+            color = RojoAlerta,
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp
         )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun SelectorEdadHorizontalPreview() {
-    MiTiendaTheme {
-        SelectorEdadHorizontal(
-            edadSeleccionada = 5,
-            onEdadSelected = {}
-        )
-    }
+fun PantallaPerfilPreview() {
+    PantallaPerfil()
 }

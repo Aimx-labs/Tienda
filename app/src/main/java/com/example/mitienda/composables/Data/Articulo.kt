@@ -4,8 +4,17 @@ data class Articulo(
     val id: Long = System.currentTimeMillis(),
     val nombre: String,
     val precio: Float = 0.0f,
-    // Agregamos estos campos para el diseño, con valores por defecto
-    val imagenUrl: String = "https://images.unsplash.com/photo-1512436991641-6745cdb1723f", // URL de prueba
-    val talla: String = "M",
-    val color: String = "Standard"
-)
+    val imagenUrl: String? = null,
+    val talla: String? = null,
+    val color: String? = null
+) {
+    // Si la API no manda imagen, usamos una de tecnología por defecto de Unsplash
+    val urlSegura: String
+        get() = imagenUrl ?: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=500&auto=format&fit=crop"
+
+    val tallaSegura: String
+        get() = talla ?: "Única"
+
+    val colorSeguro: String
+        get() = color ?: "Estándar"
+}

@@ -16,8 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.mitienda.composables.AppNavegacion
 import com.example.mitienda.composables.ListaCompras
-import com.example.mitienda.composables.contadorCafes
 import com.example.mitienda.ui.theme.MiTiendaTheme
 
 class MainActivity : ComponentActivity() {
@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MiTiendaTheme {
-                ListaCompras()
+                AppNavegacion()
             }
         }
     }
