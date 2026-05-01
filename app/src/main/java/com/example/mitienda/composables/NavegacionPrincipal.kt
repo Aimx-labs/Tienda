@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -75,31 +76,37 @@ fun BarraNavegacionReal(navController: NavHostController) {
     NavigationBar(containerColor = Color.White, tonalElevation = 8.dp) {
         NavigationBarItem(
             icon = { Icon(Icons.Default.Home, null) },
-            label = { Text("Home") },
+            label = { Text("Principal") },
             selected = rutaActual == "principal",
             onClick = { navController.navigate("principal") },
             colors = NavigationBarItemDefaults.colors(selectedIconColor = VerdeOscuro, indicatorColor = FondoCantidad)
         )
         NavigationBarItem(
             icon = { Icon(Icons.Default.List, null) },
-            label = { Text("Categories") },
+            label = { Text("Categorias") },
             selected = rutaActual == "categorias",
             onClick = { navController.navigate("categorias") },
             colors = NavigationBarItemDefaults.colors(selectedIconColor = VerdeOscuro, indicatorColor = FondoCantidad)
         )
         NavigationBarItem(
             icon = { Icon(Icons.Default.ShoppingCart, null) },
-            label = { Text("Cart") },
+            label = { Text("Carrito") },
             selected = rutaActual == "carrito",
             onClick = { navController.navigate("carrito") },
             colors = NavigationBarItemDefaults.colors(selectedIconColor = Color.White, indicatorColor = VerdeOscuro)
         )
         NavigationBarItem(
             icon = { Icon(Icons.Default.Person, null) },
-            label = { Text("Profile") },
+            label = { Text("Perfil") },
             selected = rutaActual == "perfil",
             onClick = { navController.navigate("perfil") },
             colors = NavigationBarItemDefaults.colors(selectedIconColor = VerdeOscuro, indicatorColor = FondoCantidad)
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AppNavegacionPreview() {
+    AppNavegacion()
 }

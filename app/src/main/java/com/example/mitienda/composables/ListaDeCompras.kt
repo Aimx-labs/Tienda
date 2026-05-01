@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.mitienda.composables.Data.Articulo
 import com.example.mitienda.network.RetrofitProductos
@@ -73,4 +74,10 @@ fun ListaCompras(onIrAPagar: () -> Unit = {}) {
             item { Spacer(modifier = Modifier.height(80.dp)) } // Espacio para que el botón no tape la última tarjeta
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ListaComprasPreview() {
+    ListaCompras()
 }
