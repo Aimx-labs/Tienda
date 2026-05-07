@@ -28,7 +28,7 @@ fun ListaCompras(onIrAPagar: () -> Unit = {}) {
         containerColor = FondoGrisClaro,
         topBar = {
             TopAppBar(
-                title = { Text("Cart", fontWeight = FontWeight.ExtraBold) },
+                title = { Text("Carrito", fontWeight = FontWeight.ExtraBold) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = FondoGrisClaro)
             )
         },
@@ -60,7 +60,7 @@ fun ListaCompras(onIrAPagar: () -> Unit = {}) {
         ) {
             item {
                 Text(
-                    text = "Review your curated selection of atelier pieces.",
+                    text = "Revisa las cosas que quieras comprar.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray,
                     modifier = Modifier.padding(16.dp)

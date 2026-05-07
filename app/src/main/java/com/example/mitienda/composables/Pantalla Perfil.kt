@@ -76,7 +76,7 @@ fun TopBarPerfilEthereal() {
         )
 
         Text(
-            text = "The Ethereal Atelier",
+            text = "The Aimox Store",
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = VerdeEthereal
@@ -222,7 +222,7 @@ fun SeccionMisPedidos() {
                     }
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Seda Orgánica & Lino",
+                        text = "Alienware 17 R4",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = TextoPrincipal

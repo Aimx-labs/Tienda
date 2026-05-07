@@ -28,7 +28,7 @@ fun PantallaConfirmacionPago(onNavigateHome: () -> Unit = {}) {
                 .verticalScroll(rememberScrollState())
                 .padding(24.dp)
         ) {
-            Text("Review Your Order", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
+            Text("Revisa Tu Pedido", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -39,7 +39,7 @@ fun PantallaConfirmacionPago(onNavigateHome: () -> Unit = {}) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(modifier = Modifier.padding(20.dp)) {
-                    Text("Summary", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text("Resumen", fontSize = 18.sp, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
@@ -48,12 +48,12 @@ fun PantallaConfirmacionPago(onNavigateHome: () -> Unit = {}) {
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                     Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-                        Text("Standard Shipping", color = Color.Gray)
+                        Text("Envío Estándar", color = Color.Gray)
                         Text("$12.00")
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                     Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-                        Text("Estimated Tax", color = Color.Gray)
+                        Text("Impuestos Estimados", color = Color.Gray)
                         Text("$21.50")
                     }
 
@@ -70,7 +70,7 @@ fun PantallaConfirmacionPago(onNavigateHome: () -> Unit = {}) {
 
                     // Banner de recompensas
                     Box(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Color(0xFFE2F3ED)).padding(16.dp)) {
-                        Text("Ethereal Rewards: You'll earn 290 points with this purchase.", fontSize = 12.sp, color = Color(0xFF135041))
+                        Text("The Aimox Store Rewards Program: Ganarás 290 puntos con esta compra.", fontSize = 12.sp, color = Color(0xFF135041))
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))
@@ -81,7 +81,7 @@ fun PantallaConfirmacionPago(onNavigateHome: () -> Unit = {}) {
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF135041)),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text("Place Your Order", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                        Text("Realizar Pago", fontWeight = FontWeight.Bold, fontSize = 16.sp)
                     }
                 }
             }

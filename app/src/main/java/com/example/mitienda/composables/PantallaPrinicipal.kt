@@ -59,7 +59,7 @@ fun TopBarPrincipalEthereal() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(Icons.Default.Search, contentDescription = "Buscar", tint = VerdeEthereal, modifier = Modifier.size(24.dp))
-        Text("The Ethereal Atelier", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = VerdeEthereal)
+        Text("The Aimox Store", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = VerdeEthereal)
         Box(modifier = Modifier.size(32.dp).clip(CircleShape).background(Color.DarkGray))
     }
 }
@@ -75,7 +75,7 @@ fun SeccionHero(modifier: Modifier = Modifier) {
             Column(modifier = Modifier.align(Alignment.BottomStart).padding(24.dp)) {
                 Text("COLECCIÓN LIMITADA", color = Color.White.copy(alpha = 0.8f), fontSize = 10.sp, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("Belleza en la\nImperfección", color = Color.White, fontSize = 32.sp, fontWeight = FontWeight.ExtraBold, lineHeight = 36.sp)
+                Text("Ofertas de\nVerano", color = Color.White, fontSize = 32.sp, fontWeight = FontWeight.ExtraBold, lineHeight = 36.sp)
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = { /* Acción explorar */ },
@@ -100,7 +100,7 @@ fun SeccionNovedades(onProductoClick: () -> Unit = {}) { // <-- RECIBE EL CLIC A
         ) {
             Column {
                 Text("Novedades", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = TextoPrincipal)
-                Text("Recién llegados a nuestro atelier.", fontSize = 12.sp, color = TextoSecundario)
+                Text("Recién llegados a nuestra tienda.", fontSize = 12.sp, color = TextoSecundario)
             }
             Text("Ver todo", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = VerdeEthereal)
         }
@@ -112,9 +112,9 @@ fun SeccionNovedades(onProductoClick: () -> Unit = {}) { // <-- RECIBE EL CLIC A
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Se lo pasamos a cada tarjeta
-            TarjetaProductoMini("Cojín de Lino", "€85.00", Color(0xFF6B6652), onClick = onProductoClick)
-            TarjetaProductoMini("Cuenco Nogal", "€120.00", Color(0xFF1E2328), onClick = onProductoClick)
-            TarjetaProductoMini("Vela Aromática", "€45.00", Color(0xFF8C7A6B), onClick = onProductoClick)
+            TarjetaProductoMini("Motorola G14", "$250.00", Color(0xFF6B6652), onClick = onProductoClick)
+            TarjetaProductoMini("Dell G3", "$499.00", Color(0xFF1E2328), onClick = onProductoClick)
+            TarjetaProductoMini("MSI GE63 Thin", "$699.00", Color(0xFF8C7A6B), onClick = onProductoClick)
         }
     }
 }
@@ -139,8 +139,8 @@ fun SeccionColeccionesDestacadas(modifier: Modifier = Modifier) {
         Text("Colecciones Destacadas", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = TextoPrincipal)
         Spacer(modifier = Modifier.height(16.dp))
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            TarjetaColeccion("Colección\nSantuario", "Un retiro que redefine la paz en el hogar moderno.", "Descubrir", Color(0xFF5D6B58), 280.dp)
-            TarjetaColeccion("Luz Etérea", "ILUMINACIÓN", null, Color(0xFF1E2B2B), 180.dp)
+            TarjetaColeccion("Colección\nAimox", "Selección personal de productos aimox.", "Descubrir", Color(0xFF5D6B58), 280.dp)
+            TarjetaColeccion("Accesorios Para El Hogar", "ILUMINACIÓN", null, Color(0xFF1E2B2B), 180.dp)
         }
     }
 }
@@ -165,7 +165,7 @@ fun TarjetaColeccion(titulo: String, subtitulo: String, botonTexto: String?, col
 fun SeccionNewsletter(modifier: Modifier = Modifier) {
     var email by remember { mutableStateOf("") }
     Column(modifier = modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("El Legado del\nDetalle", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, color = VerdeEthereal, textAlign = TextAlign.Center)
+        Text("Mimo en el\nDetalle", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, color = VerdeEthereal, textAlign = TextAlign.Center)
         Spacer(modifier = Modifier.height(12.dp))
         OutlinedTextField(
             value = email,

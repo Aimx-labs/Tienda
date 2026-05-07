@@ -63,7 +63,7 @@ fun TopBarCategoriasEthereal() {
         )
 
         Text(
-            text = "The Ethereal Atelier",
+            text = "The Aimox Store",
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = VerdeEthereal
@@ -86,7 +86,7 @@ fun BuscadorCategorias(modifier: Modifier = Modifier) {
     TextField(
         value = searchQuery,
         onValueChange = { searchQuery = it },
-        placeholder = { Text("Search collections...", color = TextoSecundario) },
+        placeholder = { Text("Buscar", color = TextoSecundario) },
         leadingIcon = {
             Icon(Icons.Default.Search, contentDescription = "Buscar", tint = TextoSecundario)
         },
@@ -114,13 +114,13 @@ fun FiltrosSuperiores() {
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         item {
-            BotonFiltro(texto = "Popularity", seleccionado = true)
+            BotonFiltro(texto = "Popular", seleccionado = true)
         }
         item {
-            BotonFiltro(texto = "Price", seleccionado = false)
+            BotonFiltro(texto = "Por Precio", seleccionado = false)
         }
         item {
-            BotonFiltro(texto = "Newest", seleccionado = false)
+            BotonFiltro(texto = "Mas Nuevo", seleccionado = false)
         }
     }
 }
@@ -152,21 +152,21 @@ fun ListaColecciones() {
     ) {
         item {
             TarjetaColeccionItem(
-                titulo = "Fragrances",
+                titulo = "Accesorios",
                 cantidad = "12 items",
                 colorFondo = Color(0xFFC3B091) // Color crema/dorado oscuro
             )
         }
         item {
             TarjetaColeccionItem(
-                titulo = "Jewelry",
+                titulo = "Telefonos",
                 cantidad = "34 items",
                 colorFondo = Color(0xFF4A5553) // Gris verdoso oscuro
             )
         }
         item {
             TarjetaColeccionItem(
-                titulo = "Home Accents",
+                titulo = "Laptops y varios",
                 cantidad = "58 items",
                 colorFondo = Color(0xFFE4D5C7) // Beige claro
             )
