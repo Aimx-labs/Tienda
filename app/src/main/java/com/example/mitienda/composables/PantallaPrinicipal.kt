@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 private val FondoPrincipal = Color(0xFFF4F6F4)
-
+// usuario
 @Composable
 fun PantallaPrincipal(onProductoClick: () -> Unit = {}) { // <-- AQUÍ RECIBE EL CLIC
     Scaffold(
