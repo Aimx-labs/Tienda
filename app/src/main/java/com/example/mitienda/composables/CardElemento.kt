@@ -39,6 +39,7 @@ fun TarjetaElemento(articulo: Articulo) {
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // Imagen cargada de Internet con Coil (Importada correctamente arriba)
             AsyncImage(
                 model = articulo.imagenUrl,
                 contentDescription = "Imagen de ${articulo.nombre}",
@@ -46,10 +47,14 @@ fun TarjetaElemento(articulo: Articulo) {
                     .size(80.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(Color.LightGray),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop // Recorta la imagen para que encaje perfecto
             )
+
             Spacer(modifier = Modifier.width(16.dp))
+
+            // Contenidos (Textos y Controles)
             Column(modifier = Modifier.weight(1f)) {
+                // Fila superior: Título y Bote de basura
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -71,17 +76,22 @@ fun TarjetaElemento(articulo: Articulo) {
                             .clickable { /* TODO: Lógica para eliminar de la API */ }
                     )
                 }
+
+                // Subtítulo
                 Text(
                     text = "Size: ${articulo.talla} | Color: ${articulo.color}",
                     fontSize = 12.sp,
                     color = Color.Gray,
                     modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
                 )
+
+                // Fila inferior: Cantidad y Precio
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    // Controles de Cantidad
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
@@ -101,8 +111,10 @@ fun TarjetaElemento(articulo: Articulo) {
                             modifier = Modifier.padding(horizontal = 6.dp).clickable { /* Sumar */ }
                         )
                     }
+
+                    // Precio
                     Text(
-                        text = String.format("$%.2f", articulo.precio.toDouble()),
+                        text = "€${articulo.precio}",
                         fontWeight = FontWeight.ExtraBold,
                         fontSize = 18.sp,
                         color = VerdeOscuro
