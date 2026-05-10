@@ -1,6 +1,7 @@
 package com.example.mitienda.composables
 
-import androidx.compose.foundation.layout.Box
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -10,9 +11,6 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,68 +24,86 @@ import androidx.navigation.compose.rememberNavController
 @Composable
 fun AppNavegacion() {
     val navController = rememberNavController()
-    // Simulamos un estado de sesión (luego lo puedes pasar a un ViewModel)
-    var usuarioLogueado by remember { mutableStateOf(false) }
-
-    NavHost(
-        navController = navController,
-        startDestination = if (usuarioLogueado) "principal" else "login"
-    ) {
-        composable("login") {
-            // Usa la PantallaLogin que te pasé en el mensaje anterior
-            PantallaLogin(onLoginSuccess = { usuarioLogueado = true })
-        }
-
-        composable("principal") {
-            Scaffold(bottomBar = { BarraNavegacionReal(navController) }) { p ->
-                Box(modifier = Modifier.padding(p)) {
-                    PantallaPrincipal(onProductoClick = { navController.navigate("detalles_producto") })
-                }
-            }
-        }
-
-        composable("categorias") {
-            Scaffold(bottomBar = { BarraNavegacionReal(navController) }) { p ->
-                Box(modifier = Modifier.padding(p)) { PantallaCategorias() }
-            }
-        }
-
-        composable("carrito") {
-            Scaffold(bottomBar = { BarraNavegacionReal(navController) }) { p ->
-                Box(modifier = Modifier.padding(p)) {
-                    ListaCompras(onIrAPagar = { navController.navigate("confirmacion_pago") })
-                }
-            }
-        }
-
-        composable("perfil") {
-            Scaffold(bottomBar = { BarraNavegacionReal(navController) }) { p ->
-                Box(modifier = Modifier.padding(p)) {
-                    PantallaPerfil()
-                    // Nota: Dentro de PantallaPerfil, el botón de vender
-                    // debe llamar a navController.navigate("vender")
-                }
-            }
-        }
-
-        composable("vender") {
-            PantallaPublicar(onProductoPublicado = { navController.popBackStack() })
-        }
-
-        composable("detalles_producto") {
-            PantallaDetallesProducto(onBack = { navController.popBackStack() })
-        }
-
-        composable("confirmacion_pago") {
-            PantallaConfirmacionPago(onNavigateHome = { navController.navigate("principal") })
-        }
-    }
-}
-@Composable
-fun BarraNavegacionReal(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val rutaActual = navBackStackEntry?.destination?.route
 
+    Scaffold(
+        bottomBar = {
+            if (rutaActual != "login") {
+                BarraNavegacionReal(navController, rutaActual)
+            }
+        }
+    ) { paddingValues ->
+        NavHost(
+            navController = navController,
+            startDestination = "login",
+            modifier = if (rutaActual == "login") Modifier else Modifier.padding(paddingValues)
+        ) {
+
+            composable("login") {
+                PantallaLogin(
+                    onLoginSuccess = {
+                        navController.navigate("principal") {
+                            popUpTo("login") { inclusive = true }
+                        }
+                    }
+                )
+            }
+
+            composable("principal") {
+                PantallaPrincipal(
+                    onProductoClick = { navController.navigate("detalles_producto") },
+                    onPerfilClick = { navController.navigate("perfil") }
+                )
+            }
+
+            composable("categorias") {
+                PantallaCategorias(
+                    onProductoClick = { navController.navigate("detalles_producto") },
+                    onPerfilClick = { navController.navigate("perfil") }
+                )
+            }
+
+            composable("carrito") {
+                ListaCompras(
+                    onIrAPagar = { totalCalculado ->
+                        navController.navigate("confirmacion_pago/$totalCalculado")
+                    },
+                    onPerfilClick = { navController.navigate("perfil") }
+                )
+            }
+
+            composable("perfil") {
+                PantallaPerfil()
+            }
+
+            composable("detalles_producto") {
+                PantallaDetallesProducto(
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(
+                route = "confirmacion_pago/{subtotal}",
+                arguments = listOf(navArgument("subtotal") { type = NavType.FloatType })
+            ) { backStackEntry ->
+                val subtotalExtraido = backStackEntry.arguments?.getFloat("subtotal")?.toDouble() ?: 0.0
+
+                PantallaConfirmacionPago(
+                    subtotal = subtotalExtraido,
+                    onNavigateHome = {
+                        navController.navigate("principal") {
+                            popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                        }
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun BarraNavegacionReal(navController: NavHostController, rutaActual: String?) {
     val VerdeOscuro = Color(0xFF135041)
     val FondoCantidad = Color(0xFFE8F0ED)
 

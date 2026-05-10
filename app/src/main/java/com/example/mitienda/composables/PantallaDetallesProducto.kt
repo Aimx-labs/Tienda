@@ -17,10 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 
 @Composable
 fun PantallaDetallesProducto(onBack: () -> Unit = {}) {
@@ -34,7 +36,6 @@ fun PantallaDetallesProducto(onBack: () -> Unit = {}) {
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
-            // Top Bar Custom
             Row(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -49,34 +50,34 @@ fun PantallaDetallesProducto(onBack: () -> Unit = {}) {
                 }
             }
 
-            // Imagen Principal
             Box(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).height(350.dp)
-                    .clip(RoundedCornerShape(24.dp)).background(Color(0xFFE2E6E3))
+                    .clip(RoundedCornerShape(24.dp)).background(Color.White)
             ) {
-                Box(modifier = Modifier.padding(16.dp).clip(RoundedCornerShape(12.dp)).background(Color(0xFFA6E5D6))) {
-                    Text("OFERTA ESPECIAL", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color(0xFF135041), modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
+                AsyncImage(
+                    model = "https://storage-asset.msi.com/global/picture/product/product_1689905089a261a8d64d2b0b391aaadaa03de3850f.webp",
+                    contentDescription = "MSI GE63 Thin",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+                Box(modifier = Modifier.padding(16.dp).clip(RoundedCornerShape(12.dp)).background(Color(0xFF135041))) {
+                    Text("OFERTA ESPECIAL", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color.White, modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
                 }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Info del Producto
             Column(modifier = Modifier.padding(horizontal = 24.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     repeat(5) { Icon(Icons.Default.Star, null, tint = Color(0xFF135041), modifier = Modifier.size(14.dp)) }
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("4.8 (de 132 Reviews)", color = Color.Gray, fontSize = 12.sp)
                 }
-
                 Spacer(modifier = Modifier.height(8.dp))
-
-                Text("MSI GE63 Thin", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = Color.Black)
+                Text("MSI GF63 Thin", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = Color.Black)
                 Spacer(modifier = Modifier.height(8.dp))
                 Text("$699.00", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = Color(0xFF135041))
-
                 Spacer(modifier = Modifier.height(16.dp))
-
                 Text(
                     "Laptop Gamer con procesador i5-12450H y una tarjeta de video RTX 3050 de 4GB y 16GB de ram y un SSD de 1TB, Perfecta para aquellos que les gusta jugar y trabajar a la vez a buen precio.",
                     color = Color.DarkGray, lineHeight = 22.sp
@@ -97,7 +98,7 @@ fun BarraInferiorDetalles() {
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF135041)),
                 shape = RoundedCornerShape(16.dp)
             ) {
-                Text("Añadir al carrito", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Text("Añadir al carrito", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
             }
             Box(
                 modifier = Modifier.size(56.dp).clip(RoundedCornerShape(16.dp)).background(Color(0xFFE2E6E3)),

@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.mitienda.composables.Data.Articulo
+import java.util.Locale
 
-// Colores del diseño
 val VerdeOscuro = Color(0xFF135041)
 val FondoCantidad = Color(0xFFE8F0ED)
 
@@ -28,98 +28,52 @@ fun TarjetaElemento(articulo: Articulo) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 24.dp, vertical = 8.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Imagen cargada de Internet con Coil (Importada correctamente arriba)
+        Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+
             AsyncImage(
                 model = articulo.imagenUrl,
                 contentDescription = "Imagen de ${articulo.nombre}",
-                modifier = Modifier
-                    .size(80.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Color.LightGray),
-                contentScale = ContentScale.Crop // Recorta la imagen para que encaje perfecto
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.size(80.dp).clip(RoundedCornerShape(12.dp)).background(Color.LightGray)
             )
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // Contenidos (Textos y Controles)
             Column(modifier = Modifier.weight(1f)) {
-                // Fila superior: Título y Bote de basura
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Top
-                ) {
-                    Text(
-                        text = articulo.nombre,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = Color.Black,
-                        modifier = Modifier.weight(1f)
-                    )
-                    Icon(
-                        imageVector = Icons.Outlined.Delete,
-                        contentDescription = "Eliminar",
-                        tint = Color.LightGray,
-                        modifier = Modifier
-                            .size(20.dp)
-                            .clickable { /* TODO: Lógica para eliminar de la API */ }
-                    )
-                }
-
-                // Subtítulo
                 Text(
-                    text = "Size: ${articulo.talla} | Color: ${articulo.color}",
-                    fontSize = 12.sp,
-                    color = Color.Gray,
-                    modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
+                    text = articulo.nombre,
+                    fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.Black, maxLines = 2
                 )
 
-                // Fila inferior: Cantidad y Precio
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    // Controles de Cantidad
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .background(FondoCantidad, RoundedCornerShape(8.dp))
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
-                    ) {
-                        Text(
-                            text = "—", color = VerdeOscuro, fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 6.dp).clickable { /* Restar */ }
-                        )
-                        Text(
-                            text = "1", fontWeight = FontWeight.Bold, fontSize = 14.sp,
-                            modifier = Modifier.padding(horizontal = 12.dp)
-                        )
-                        Text(
-                            text = "+", color = VerdeOscuro, fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 6.dp).clickable { /* Sumar */ }
-                        )
-                    }
+                Text(
+                    text = "Size: ${articulo.talla} | Color: ${articulo.color}",
+                    fontSize = 12.sp, color = Color.Gray, modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
+                )
 
-                    // Precio
-                    Text(
-                        text = "€${articulo.precio}",
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 18.sp,
-                        color = VerdeOscuro
-                    )
+                Text(
+                    text = String.format(Locale.US, "$%.2f", articulo.precio.toDouble()),
+                    fontSize = 16.sp, fontWeight = FontWeight.ExtraBold, color = VerdeOscuro
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.background(FondoCantidad, RoundedCornerShape(8.dp)).padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Text("-", color = VerdeOscuro, fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 8.dp).clickable { })
+                    Text("1", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    Text("+", color = VerdeOscuro, fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 8.dp).clickable { })
                 }
+            }
+
+            IconButton(onClick = { }) {
+                Icon(Icons.Outlined.Delete, contentDescription = "Eliminar", tint = Color.LightGray)
             }
         }
     }
