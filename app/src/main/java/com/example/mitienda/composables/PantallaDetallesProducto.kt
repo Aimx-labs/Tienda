@@ -17,10 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 
 @Composable
 fun PantallaDetallesProducto(onBack: () -> Unit = {}) {
@@ -49,13 +51,20 @@ fun PantallaDetallesProducto(onBack: () -> Unit = {}) {
                 }
             }
 
-            // Imagen Principal
+            // Imagen Principal con Coil (ONLINE)
             Box(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).height(350.dp)
-                    .clip(RoundedCornerShape(24.dp)).background(Color(0xFFE2E6E3))
+                    .clip(RoundedCornerShape(24.dp)).background(Color.White)
             ) {
-                Box(modifier = Modifier.padding(16.dp).clip(RoundedCornerShape(12.dp)).background(Color(0xFFA6E5D6))) {
-                    Text("OFERTA ESPECIAL", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color(0xFF135041), modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
+                AsyncImage(
+                    model = "https://storage-asset.msi.com/global/picture/product/product_1689905089a261a8d64d2b0b391aaadaa03de3850f.webp", // Cambia esto por la URL de tu producto
+                    contentDescription = "MSI GE63 Thin",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+
+                Box(modifier = Modifier.padding(16.dp).clip(RoundedCornerShape(12.dp)).background(Color(0xFF135041))) {
+                    Text("OFERTA ESPECIAL", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color.White, modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
                 }
             }
 
@@ -97,7 +106,7 @@ fun BarraInferiorDetalles() {
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF135041)),
                 shape = RoundedCornerShape(16.dp)
             ) {
-                Text("Añadir al carrito", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Text("Añadir al carrito", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
             }
             Box(
                 modifier = Modifier.size(56.dp).clip(RoundedCornerShape(16.dp)).background(Color(0xFFE2E6E3)),

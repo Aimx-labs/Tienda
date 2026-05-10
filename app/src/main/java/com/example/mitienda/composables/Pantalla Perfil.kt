@@ -19,12 +19,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 
-// Colores basados en tu diseño "The Ethereal Atelier"
+import com.example.mitienda.R
+
 val FondoPerfil = Color(0xFFF4F6F4)
 val VerdeEthereal = Color(0xFF005C4A)
 val GrisFondoTarjeta = Color(0xFFFFFFFF)
@@ -54,7 +57,7 @@ fun PantallaPerfil() {
             MenuOpciones()
             Spacer(modifier = Modifier.height(40.dp))
             BotonCerrarSesion()
-            Spacer(modifier = Modifier.height(100.dp)) // Espacio para el Bottom Navigation
+            Spacer(modifier = Modifier.height(100.dp))
         }
     }
 }
@@ -82,12 +85,13 @@ fun TopBarPerfilEthereal() {
             color = VerdeEthereal
         )
 
-        // Mini Avatar Placeholder
-        Box(
+        AsyncImage(
+            model = R.drawable.amongus,
+            contentDescription = "Mini Avatar",
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(32.dp)
                 .clip(CircleShape)
-                .background(Color.DarkGray)
         )
     }
 }
@@ -98,15 +102,17 @@ fun CabeceraPerfil() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(contentAlignment = Alignment.BottomCenter) {
-            // Avatar Circular Grande
-            Box(
+            // CAMBIO 2: AsyncImage
+            AsyncImage(
+                model = R.drawable.amongus,
+                contentDescription = "Foto de perfil grande",
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(100.dp)
                     .clip(CircleShape)
-                    .background(Color.LightGray)
                     .border(3.dp, VerdeEthereal, CircleShape)
             )
-            // Badge de Nivel (GOLD)
+
             Box(
                 modifier = Modifier
                     .offset(y = 12.dp)
@@ -169,7 +175,7 @@ fun SeccionMisPedidos() {
                 fontSize = 14.sp,
                 color = VerdeEthereal,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.clickable { /* Acción ver todos */ }
+                modifier = Modifier.clickable { }
             )
         }
 
@@ -187,12 +193,13 @@ fun SeccionMisPedidos() {
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Imagen del pedido (Placeholder)
-                Box(
+                AsyncImage(
+                    model = R.drawable.alienware,
+                    contentDescription = "Imagen de Alienware",
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(64.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(Color(0xFF2C3E35))
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))
@@ -254,7 +261,7 @@ fun MenuOpciones() {
             subtitulo = "2 direcciones guardadas"
         )
         ItemMenuEthereal(
-            icono = Icons.Default.ShoppingCart, // Placeholder para tarjeta
+            icono = Icons.Default.ShoppingCart,
             titulo = "Métodos de Pago",
             subtitulo = "Visa terminada en **** 4492"
         )
@@ -265,7 +272,7 @@ fun MenuOpciones() {
             tieneNotificacion = true
         )
         ItemMenuEthereal(
-            icono = Icons.Default.Face, // Placeholder para soporte
+            icono = Icons.Default.Face,
             titulo = "Soporte",
             subtitulo = "Ayuda, FAQ y contacto directo"
         )
@@ -285,7 +292,7 @@ fun ItemMenuEthereal(
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { /* Acción del menú */ }
+            .clickable { }
     ) {
         Row(
             modifier = Modifier
@@ -328,7 +335,7 @@ fun ItemMenuEthereal(
 fun BotonCerrarSesion() {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.clickable { /* Lógica de cerrar sesión */ }
+        modifier = Modifier.clickable { }
     ) {
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ExitToApp,

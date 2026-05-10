@@ -1,5 +1,7 @@
 package com.example.mitienda.composables
 
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -28,32 +30,51 @@ fun AppNavegacion() {
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = "carrito", // Para pruebas, pero puedes cambiarlo a "principal"
+            startDestination = "principal",
             modifier = Modifier.padding(paddingValues)
         ) {
             composable("principal") {
                 PantallaPrincipal(
-                    onProductoClick = { navController.navigate("detalles_producto") }
+                    onProductoClick = { navController.navigate("detalles_producto") },
+                    onPerfilClick = { navController.navigate("perfil") }
                 )
             }
+
             composable("categorias") {
-                PantallaCategorias()
+                PantallaCategorias(
+                    onProductoClick = { navController.navigate("detalles_producto") },
+                    onPerfilClick = { navController.navigate("perfil") }
+                )
             }
+
             composable("carrito") {
                 ListaCompras(
-                    onIrAPagar = { navController.navigate("confirmacion_pago") }
+                    onIrAPagar = { totalCalculado ->
+                        navController.navigate("confirmacion_pago/$totalCalculado")
+                    },
+                    onPerfilClick = { navController.navigate("perfil") }
                 )
             }
+
             composable("perfil") {
                 PantallaPerfil()
             }
+
             composable("detalles_producto") {
                 PantallaDetallesProducto(
                     onBack = { navController.popBackStack() }
                 )
             }
-            composable("confirmacion_pago") {
+
+            composable(
+                route = "confirmacion_pago/{subtotal}",
+                arguments = listOf(navArgument("subtotal") { type = NavType.FloatType })
+            ) { backStackEntry ->
+                // Extraemos el número que viajó desde el carrito
+                val subtotalExtraido = backStackEntry.arguments?.getFloat("subtotal")?.toDouble() ?: 0.0
+
                 PantallaConfirmacionPago(
+                    subtotalCarrito = subtotalExtraido,
                     onNavigateHome = {
                         navController.navigate("principal") {
                             popUpTo(navController.graph.startDestinationId) { inclusive = true }

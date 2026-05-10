@@ -6,7 +6,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,7 +17,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun PantallaConfirmacionPago(onNavigateHome: () -> Unit = {}) {
+fun PantallaConfirmacionPago(
+    subtotalCarrito: Double,
+    onNavigateHome: () -> Unit = {}
+) {
+    val subtotal = subtotalCarrito
+    val envio = if (subtotal > 0) 12.00 else 0.00
+    val impuestos = subtotal * 0.08
+    val total = subtotal + envio + impuestos
+    val puntos = total.toInt()
+
     Scaffold(
         containerColor = Color(0xFFF4F6F4)
     ) { paddingValues ->
@@ -28,49 +37,45 @@ fun PantallaConfirmacionPago(onNavigateHome: () -> Unit = {}) {
                 .verticalScroll(rememberScrollState())
                 .padding(24.dp)
         ) {
-            Text("Revisa Tu Pedido", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
-
+            Text("Revisa Tu Pedido", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, color = Color.Black)
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Resumen (estilo la imagen)
             Card(
                 colors = CardDefaults.cardColors(containerColor = Color.White),
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(modifier = Modifier.padding(20.dp)) {
-                    Text("Resumen", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text("Resumen", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.Black)
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-                        Text("Subtotal", color = Color.Gray)
-                        Text("$257.00")
+                        Text("Subtotal", color = Color.DarkGray)
+                        Text(String.format("$%.2f", subtotal), color = Color.Black)
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                     Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-                        Text("Envío Estándar", color = Color.Gray)
-                        Text("$12.00")
+                        Text("Envío Estándar", color = Color.DarkGray)
+                        Text(String.format("$%.2f", envio), color = Color.Black)
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                     Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-                        Text("Impuestos Estimados", color = Color.Gray)
-                        Text("$21.50")
+                        Text("Impuestos Estimados", color = Color.DarkGray)
+                        Text(String.format("$%.2f", impuestos), color = Color.Black)
                     }
-
                     Spacer(modifier = Modifier.height(16.dp))
                     HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                        Text("Total", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                        Text("$290.50", fontWeight = FontWeight.ExtraBold, color = Color(0xFF135041), fontSize = 22.sp)
+                        Text("Total", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.Black)
+                        Text(String.format("$%.2f", total), fontWeight = FontWeight.ExtraBold, color = Color(0xFF135041), fontSize = 22.sp)
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Banner de recompensas
                     Box(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Color(0xFFE2F3ED)).padding(16.dp)) {
-                        Text("The Aimox Store Rewards Program: Ganarás 290 puntos con esta compra.", fontSize = 12.sp, color = Color(0xFF135041))
+                        Text("The Aimox Store Rewards: Ganarás $puntos puntos con esta compra.", fontSize = 12.sp, color = Color(0xFF135041))
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))
@@ -81,7 +86,7 @@ fun PantallaConfirmacionPago(onNavigateHome: () -> Unit = {}) {
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF135041)),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text("Realizar Pago", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                        Text("Realizar Pago", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
                     }
                 }
             }
@@ -93,5 +98,5 @@ fun PantallaConfirmacionPago(onNavigateHome: () -> Unit = {}) {
 @Preview(showBackground = true)
 @Composable
 fun PantallaConfirmacionPagoPreview() {
-    PantallaConfirmacionPago()
+    PantallaConfirmacionPago(subtotalCarrito = 1500.0)
 }
