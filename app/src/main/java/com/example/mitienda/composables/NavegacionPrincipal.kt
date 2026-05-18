@@ -33,7 +33,7 @@ fun AppNavegacion() {
     var usuarioActual by remember { mutableStateOf("Invitado") }
     Scaffold(
         bottomBar = {
-            if (rutaActual != "login") {
+            if (rutaActual != "login" && rutaActual != "registro") {
                 BarraNavegacionReal(navController, rutaActual)
             }
         }
@@ -41,15 +41,32 @@ fun AppNavegacion() {
         NavHost(
             navController = navController,
             startDestination = "login",
-            modifier = if (rutaActual == "login") Modifier else Modifier.padding(paddingValues)
+            modifier = if (rutaActual == "login" || rutaActual == "registro") Modifier else Modifier.padding(paddingValues)
         ) {
 
             composable("login") {
                 PantallaLogin(
-                    onLoginSuccess = {
+                    onLoginSuccess = { nombreIngresado ->
+                        usuarioActual = nombreIngresado
                         navController.navigate("principal") {
                             popUpTo("login") { inclusive = true }
                         }
+                    },
+                    onIrARegistro = { // <-- Acción conectada
+                        navController.navigate("registro")
+                    }
+                )
+            }
+            // <-- AQUÍ AGREGAMOS LA NUEVA RUTA DE REGISTRO
+            composable("registro") {
+                PantallaRegistro(
+                    onRegistroExitoso = {
+                        // Si se registró bien, lo regresamos al login para que entre
+                        navController.popBackStack()
+                    },
+                    onIrALogin = {
+                        // Si solo se equivocó de botón, lo regresamos al login
+                        navController.popBackStack()
                     }
                 )
             }

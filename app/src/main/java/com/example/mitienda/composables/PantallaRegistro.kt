@@ -13,30 +13,16 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.mitienda.ui.theme.MiTiendaTheme
 
-// Representa a un usuario de nuestra tienda
-data class UsuarioApp(val correo: String, val clave: String, val nombre: String)
-
-// Nuestra base de datos simulada
-object BaseDatosUsuarios {
-    val listaUsuarios = mutableListOf(
-        UsuarioApp("jonathan@aimox.com", "1234", "Jonathan Alberto"),
-        UsuarioApp("daniel@aimox.com", "1234", "Daniel López"),
-        UsuarioApp("genaro@aimox.com", "1234", "Genaro Hinojoza")
-    )
-
-    fun registrar(nuevoUsuario: UsuarioApp) {
-        listaUsuarios.add(nuevoUsuario)
-    }
-}
 @Composable
-fun PantallaLogin(
-    onLoginSuccess: (String) -> Unit = {},
-    onIrARegistro: () -> Unit = {} // <-- Nueva acción para ir al registro
+fun PantallaRegistro(
+    onRegistroExitoso: () -> Unit = {},
+    onIrALogin: () -> Unit = {}
 ) {
+    var nombre by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
     var mensajeError by remember { mutableStateOf("") }
 
     Surface(modifier = Modifier.fillMaxSize(), color = Color(0xFFF4F6F4)) {
@@ -45,11 +31,17 @@ fun PantallaLogin(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("Bienvenido a", fontSize = 16.sp, color = Color.Gray)
+            Text("Crea tu cuenta en", fontSize = 16.sp, color = Color.Gray)
             Text("The Aimox Store", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF135041))
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
+            OutlinedTextField(
+                value = nombre, onValueChange = { nombre = it; mensajeError = "" },
+                label = { Text("Nombre completo") },
+                modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), singleLine = true
+            )
+            Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
                 value = email, onValueChange = { email = it; mensajeError = "" },
                 label = { Text("Correo electrónico") },
@@ -59,6 +51,12 @@ fun PantallaLogin(
             OutlinedTextField(
                 value = password, onValueChange = { password = it; mensajeError = "" },
                 label = { Text("Contraseña") }, visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), singleLine = true
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            OutlinedTextField(
+                value = confirmPassword, onValueChange = { confirmPassword = it; mensajeError = "" },
+                label = { Text("Confirmar Contraseña") }, visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), singleLine = true
             )
 
@@ -71,30 +69,33 @@ fun PantallaLogin(
 
             Button(
                 onClick = {
-                    // Buscamos dinámicamente en nuestra base de datos simulada
-                    val usuarioEncontrado = BaseDatosUsuarios.listaUsuarios.find { it.correo == email && it.clave == password }
-
-                    if (usuarioEncontrado != null) {
-                        onLoginSuccess(usuarioEncontrado.nombre) // Pasamos el nombre del dueño
+                    if (nombre.isBlank() || email.isBlank() || password.isBlank()) {
+                        mensajeError = "Por favor, llena todos los campos"
+                    } else if (password != confirmPassword) {
+                        mensajeError = "Las contraseñas no coinciden"
+                    } else if (BaseDatosUsuarios.listaUsuarios.any { it.correo == email }) {
+                        mensajeError = "Este correo ya está registrado"
                     } else {
-                        mensajeError = "Correo o contraseña incorrectos"
+                        // Guardamos al nuevo usuario en la base de datos simulada
+                        BaseDatosUsuarios.registrar(UsuarioApp(email, password, nombre))
+                        onRegistroExitoso()
                     }
                 },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF135041)),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text("Iniciar Sesión", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
+                Text("Registrarse", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
             }
 
             Spacer(modifier = Modifier.height(24.dp))
             Row {
-                Text("¿No tienes cuenta? ", color = Color.Gray)
+                Text("¿Ya tienes cuenta? ", color = Color.Gray)
                 Text(
-                    "Regístrate aquí",
+                    "Inicia Sesión",
                     color = Color(0xFF135041),
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable { onIrARegistro() } // Nos manda al registro
+                    modifier = Modifier.clickable { onIrALogin() }
                 )
             }
         }
@@ -103,8 +104,6 @@ fun PantallaLogin(
 
 @Preview(showBackground = true)
 @Composable
-fun PantallaLoginPreview() {
-    MiTiendaTheme {
-        PantallaLogin()
-    }
+fun PantallaRegistroPreview() {
+    PantallaRegistro()
 }
