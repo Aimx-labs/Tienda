@@ -29,65 +29,93 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.mitienda.R
 
+// Paleta de Colores Local para evitar errores de referencias no resueltas
 val FondoPerfil = Color(0xFFF4F6F4)
 val GrisFondoTarjeta = Color(0xFFFFFFFF)
 val RojoAlerta = Color(0xFFB3261E)
+val VerdeEthereal = Color(0xFF135041) // Color institucional de tu tienda
+val TextoPrincipal = Color(0xFF1C1B1F)
+val TextoSecundario = Color(0xFF757575)
 
 @Composable
-fun PantallaPerfil() {
+fun PantallaPerfil(
+    nombreUsuario: String = "Jonathan Alberto",
+    imagenPerfil: Int
+    = R.drawable.amongus,
+    onCerrarSesion: () -> Unit = {}
+) {
     Scaffold(
         containerColor = FondoPerfil,
-        topBar = { TopBarPerfilEthereal() }
+        topBar = { TopBarPerfilEthereal(imagenPerfil) }
     ) { paddingValues ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(paddingValues).verticalScroll(rememberScrollState()).padding(horizontal = 24.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(32.dp))
-            CabeceraPerfil()
+            CabeceraPerfil(nombreUsuario, imagenPerfil)
             Spacer(modifier = Modifier.height(32.dp))
             SeccionMisPedidos()
             Spacer(modifier = Modifier.height(24.dp))
             MenuOpciones()
             Spacer(modifier = Modifier.height(40.dp))
-            BotonCerrarSesion()
+            BotonCerrarSesion(onClick = onCerrarSesion)
             Spacer(modifier = Modifier.height(100.dp))
         }
     }
 }
 
 @Composable
-fun TopBarPerfilEthereal() {
+fun TopBarPerfilEthereal(imagenPerfil: Int) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(Icons.Default.Search, contentDescription = "Buscar", tint = VerdeEthereal, modifier = Modifier.size(24.dp))
         Text("The Aimox Store", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = VerdeEthereal)
         AsyncImage(
-            model = R.drawable.amongus,
-            contentDescription = "Mini Avatar", contentScale = ContentScale.Crop,
-            modifier = Modifier.size(32.dp).clip(CircleShape)
+            model = imagenPerfil,
+            contentDescription = "Mini Avatar",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(32.dp)
+                .clip(CircleShape)
         )
     }
 }
 
 @Composable
-fun CabeceraPerfil() {
+fun CabeceraPerfil(nombre: String, foto: Int) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(contentAlignment = Alignment.BottomCenter) {
             AsyncImage(
-                model = R.drawable.amongus, // Cambia por tu avatar
-                contentDescription = "Foto", contentScale = ContentScale.Crop,
-                modifier = Modifier.size(100.dp).clip(CircleShape).border(3.dp, VerdeEthereal, CircleShape)
+                model = foto,
+                contentDescription = "Foto",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape)
+                    .border(3.dp, VerdeEthereal, CircleShape)
             )
-            Box(modifier = Modifier.offset(y = 12.dp).clip(RoundedCornerShape(12.dp)).background(VerdeEthereal).padding(horizontal = 12.dp, vertical = 4.dp)) {
+            Box(
+                modifier = Modifier
+                    .offset(y = 12.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(VerdeEthereal)
+                    .padding(horizontal = 12.dp, vertical = 4.dp)
+            ) {
                 Text("GOLD", color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.Bold)
             }
         }
         Spacer(modifier = Modifier.height(24.dp))
-        Text("Jonathan Alberto", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, color = TextoPrincipal)
+        Text(nombre, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, color = TextoPrincipal)
     }
 }
 
@@ -101,12 +129,19 @@ fun SeccionMisPedidos() {
             colors = CardDefaults.cardColors(containerColor = Color.White),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Row(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.alienware),
                     contentDescription = "Imagen de mi pedido",
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.size(64.dp).clip(RoundedCornerShape(12.dp))
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clip(RoundedCornerShape(12.dp))
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Column(modifier = Modifier.weight(1f)) {
@@ -156,14 +191,21 @@ fun ItemMenuEthereal(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = GrisFondoTarjeta),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
-        modifier = Modifier.fillMaxWidth().clickable { }
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { }
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
-                modifier = Modifier.size(40.dp).clip(CircleShape).background(Color(0xFFF4F6F4)),
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(Color(0xFFF4F6F4)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(imageVector = icono, contentDescription = null, tint = VerdeEthereal, modifier = Modifier.size(20.dp))
@@ -183,8 +225,14 @@ fun ItemMenuEthereal(
 }
 
 @Composable
-fun BotonCerrarSesion() {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+fun BotonCerrarSesion(onClick: () -> Unit = {}) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .clickable { onClick() }
+            .padding(8.dp)
+    ) {
         Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Salir", tint = Color.Red)
         Spacer(modifier = Modifier.width(8.dp))
         Text("Cerrar Sesión", color = Color.Red, fontWeight = FontWeight.Bold, fontSize = 16.sp)
@@ -193,6 +241,18 @@ fun BotonCerrarSesion() {
 
 @Preview(showBackground = true)
 @Composable
-fun PantallaPerfilPreview() {
-    PantallaPerfil()
+fun PantallaPerfilJonathanPreview() {
+    PantallaPerfil(nombreUsuario = "Jonathan Alberto")
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PantallaPerfilDanielPreview() {
+    PantallaPerfil(nombreUsuario = "Daniel López")
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PantallaPerfilGenaroPreview() {
+    PantallaPerfil(nombreUsuario = "Genaro Hinojoza")
 }

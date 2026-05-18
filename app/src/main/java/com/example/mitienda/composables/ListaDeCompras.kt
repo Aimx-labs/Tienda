@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.sp
 import com.example.mitienda.R
 import com.example.mitienda.composables.Data.Articulo
 import com.example.mitienda.network.RetrofitProductos
+import androidx.compose.foundation.lazy.items
+import com.example.mitienda.composables.Data.CartManager
 import java.util.Locale
 
 val FondoGrisClaro = Color(0xFFF6F8F7)
@@ -32,47 +34,49 @@ fun ListaCompras(
     onIrAPagar: (Double) -> Unit = {},
     onPerfilClick: () -> Unit = {}
 ) {
-    var articulos by remember { mutableStateOf<List<Articulo>>(emptyList()) }
-
-    LaunchedEffect(Unit) {
-        articulos = RetrofitProductos.apiArticulosService.obtenerArticulos()
-    }
+    val itemsCarrito = CartManager.listaCarrito
+    val totalCalculado = itemsCarrito.sumOf { (it.articulo.precio * it.cantidad).toDouble() }
 
     Scaffold(
-        containerColor = FondoGrisClaro,
-        topBar = { TopBarCarritoAimox(onPerfilClick = onPerfilClick) },
+        containerColor = Color(0xFFF6F8F7),
+        topBar = {
+            TopAppBar(
+                title = { Text("Mi Carrito", fontWeight = FontWeight.Bold, color = Color(0xFF135041)) },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFF6F8F7))
+            )
+        },
         bottomBar = {
-            if (articulos.isNotEmpty()) {
-                val total = articulos.sumOf { it.precio.toDouble() }
-                val totalFormateado = String.format(Locale.US, "$%.2f", total)
-
+            if (itemsCarrito.isNotEmpty()) {
                 Surface(modifier = Modifier.fillMaxWidth(), shadowElevation = 8.dp, color = Color.White) {
                     Button(
-                        onClick = { onIrAPagar(total) },
+                        onClick = { onIrAPagar(totalCalculado) },
                         modifier = Modifier.fillMaxWidth().padding(16.dp).height(56.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF135041)),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text("Total ($totalFormateado)", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
+                        Text("Pagar Total (${String.format(Locale.US, "$%.2f", totalCalculado)})", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
                     }
                 }
             }
         }
     ) { padding ->
-        LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(padding),
-            contentPadding = PaddingValues(bottom = 100.dp)
-        ) {
-            item {
-                Text(
-                    text = "Revisa las cosas que quieras comprar.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray,
-                    modifier = Modifier.padding(16.dp)
-                )
+        if (itemsCarrito.isEmpty()) {
+            Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
+                Text("Tu carrito está vacío", color = Color.Gray, fontSize = 16.sp)
             }
-            items(count = articulos.size) { index ->
-                TarjetaElemento(articulos[index])
+        } else {
+            LazyColumn(modifier = Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(bottom = 100.dp)) {
+                item {
+                    Text("Revisa las cosas que quieras comprar.", color = Color.Gray, modifier = Modifier.padding(16.dp))
+                }
+                items(itemsCarrito, key = { it.articulo.id }) { item ->
+                    TarjetaElemento(
+                        item = item,
+                        onIncrementar = { CartManager.agregarProducto(item.articulo) },
+                        onDecrementar = { CartManager.decrementarProducto(item.articulo) },
+                        onEliminar = { CartManager.eliminarProducto(item.articulo) }
+                    )
+                }
             }
         }
     }

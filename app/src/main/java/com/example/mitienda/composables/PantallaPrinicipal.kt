@@ -1,8 +1,6 @@
 package com.example.mitienda.composables
 
 import androidx.compose.foundation.Image
-import androidx.compose.ui.res.painterResource
-import com.example.mitienda.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -20,17 +18,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.mitienda.R
+import com.example.mitienda.composables.Data.Articulo
+import com.example.mitienda.composables.Data.CartManager
+import com.example.mitienda.network.RetrofitProductos
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.util.Locale
 
 private val FondoPrincipal = Color(0xFFF4F6F4)
-val VerdeEthereal = Color(0xFF135041)
-val TextoPrincipal = Color(0xFF1A1A1A)
-val TextoSecundario = Color(0xFF757575)
 
 @Composable
 fun PantallaPrincipal(
@@ -119,6 +122,23 @@ fun SeccionHero(modifier: Modifier = Modifier) {
 
 @Composable
 fun SeccionNovedades(onProductoClick: () -> Unit = {}) {
+    var productosApi by remember { mutableStateOf<List<Articulo>>(emptyList()) }
+    var cargando by remember { mutableStateOf(true) }
+
+    // Descarga desde tu API de Render
+    LaunchedEffect(Unit) {
+        try {
+            val resultado = withContext(Dispatchers.IO) {
+                RetrofitProductos.apiArticulosService.obtenerArticulos()
+            }
+            productosApi = resultado
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            cargando = false
+        }
+    }
+
     Column {
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
@@ -134,31 +154,58 @@ fun SeccionNovedades(onProductoClick: () -> Unit = {}) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Row(
-            modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 24.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            TarjetaProductoMini("Razer DEATHADDER", "$35.00", "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcReGt6Wj9lJncAz3VaQ6_d-fxRNjODMsxXe3yw6QsiH9xOeh1iL5I7xAk7ZmC6Lf3Ty7DXBOh_XzdxokS0IWnm3KP2dUHdQ4wxGV8C0gij7i5vcy0_k5fadm_a8GbUG1rMMUAAUfw&usqp=CAc", onClick = onProductoClick)
-            TarjetaProductoMini("Teclado Mecánico", "$75.00", "https://images.unsplash.com/photo-1595225476474-87563907a212?q=80&w=500&auto=format&fit=crop", onClick = onProductoClick)
-            TarjetaProductoMini("MSI GF63 Thin", "$699.00", "https://storage-asset.msi.com/global/picture/product/product_1689905089a261a8d64d2b0b391aaadaa03de3850f.webp", onClick = onProductoClick)
+        if (cargando) {
+            Box(modifier = Modifier.fillMaxWidth().height(200.dp), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(color = VerdeEthereal)
+            }
+        } else {
+            Row(
+                modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 24.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // Si la API falla o está vacía (como en el Preview), mostramos tus productos fijos
+                if (productosApi.isEmpty()) {
+                    val productosDeRespaldo = listOf(
+                        Articulo(nombre = "Razer DEATHADDER", precio = 35.00f, imagenUrl = "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcReGt6Wj9lJncAz3VaQ6_d-fxRNjODMsxXe3yw6QsiH9xOeh1iL5I7xAk7ZmC6Lf3Ty7DXBOh_XzdxokS0IWnm3KP2dUHdQ4wxGV8C0gij7i5vcy0_k5fadm_a8GbUG1rMMUAAUfw&usqp=CAc"),
+                        Articulo(nombre = "Teclado Mecánico", precio = 75.00f, imagenUrl = "https://images.unsplash.com/photo-1595225476474-87563907a212?q=80&w=500&auto=format&fit=crop"),
+                        Articulo(nombre = "MSI GF63 Thin", precio = 699.00f, imagenUrl = "https://storage-asset.msi.com/global/picture/product/product_1689905089a261a8d64d2b0b391aaadaa03de3850f.webp")
+                    )
+
+                    productosDeRespaldo.forEach { producto ->
+                        TarjetaProductoMini(articulo = producto, onClick = {
+                            CartManager.articuloSeleccionado = producto
+                            onProductoClick()
+                        })
+                    }
+                } else {
+                    // Si la API funciona, mostramos los productos reales
+                    productosApi.forEach { producto ->
+                        TarjetaProductoMini(articulo = producto, onClick = {
+                            CartManager.articuloSeleccionado = producto
+                            onProductoClick()
+                        })
+                    }
+                }
+            }
         }
     }
 }
 
+// Adaptada para recibir un Articulo y así poder guardarlo en el CartManager
 @Composable
-fun TarjetaProductoMini(nombre: String, precio: String, imageUrl: String, onClick: () -> Unit = {}) {
+fun TarjetaProductoMini(articulo: Articulo, onClick: () -> Unit = {}) {
     Column(
         modifier = Modifier.width(160.dp).clickable { onClick() }
     ) {
         AsyncImage(
-            model = imageUrl,
-            contentDescription = nombre,
+            model = articulo.urlSegura,
+            contentDescription = articulo.nombre,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxWidth().height(200.dp).clip(RoundedCornerShape(16.dp)).background(Color.LightGray)
         )
         Spacer(modifier = Modifier.height(12.dp))
-        Text(nombre, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = TextoPrincipal, maxLines = 1)
-        Text(precio, fontSize = 14.sp, color = VerdeEthereal, fontWeight = FontWeight.Medium)
+        Text(articulo.nombre, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = TextoPrincipal, maxLines = 1)
+        Text(String.format(Locale.US, "$%.2f", articulo.precio), fontSize = 14.sp, color = VerdeEthereal, fontWeight = FontWeight.Medium)
     }
 }
 

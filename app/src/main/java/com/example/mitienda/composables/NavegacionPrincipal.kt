@@ -11,6 +11,9 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,6 +30,7 @@ fun AppNavegacion() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val rutaActual = navBackStackEntry?.destination?.route
 
+    var usuarioActual by remember { mutableStateOf("Invitado") }
     Scaffold(
         bottomBar = {
             if (rutaActual != "login") {
@@ -94,6 +98,19 @@ fun AppNavegacion() {
                     onNavigateHome = {
                         navController.navigate("principal") {
                             popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                        }
+                    }
+                )
+            }
+            composable("perfil") {
+                PantallaPerfil(
+                    nombreUsuario = usuarioActual, // Toma el nombre (Daniel o Genaro)
+                    imagenPerfil = com.example.mitienda.R.drawable.amongus,
+                    onCerrarSesion = {
+                        // Al cerrar sesión, reiniciamos el usuario y volvemos al login
+                        usuarioActual = "Invitado"
+                        navController.navigate("login") {
+                            popUpTo(0) { inclusive = true }
                         }
                     }
                 )

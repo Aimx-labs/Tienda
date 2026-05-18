@@ -23,12 +23,32 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.mitienda.composables.Data.Articulo
+import com.example.mitienda.composables.Data.CartManager
+import java.util.Locale
 
 @Composable
-fun PantallaDetallesProducto(onBack: () -> Unit = {}) {
+fun PantallaDetallesProducto(
+    onBack: () -> Unit = {},
+    onAgregarAlCarritoSuccess: () -> Unit = {}
+) {
+    // Si venimos de la API usamos el artículo seleccionado, sino usamos tu MSI original por defecto / para el preview
+    val productoActual = CartManager.articuloSeleccionado ?: Articulo(
+        nombre = "MSI GF63 Thin",
+        precio = 699.00f,
+        imagenUrl = "https://storage-asset.msi.com/global/picture/product/product_1689905089a261a8d64d2b0b391aaadaa03de3850f.webp"
+    )
+
     Scaffold(
         containerColor = Color(0xFFF4F6F4),
-        bottomBar = { BarraInferiorDetalles() }
+        bottomBar = {
+            BarraInferiorDetalles(
+                onAgregarCarrito = {
+                    CartManager.agregarProducto(productoActual)
+                    onAgregarAlCarritoSuccess()
+                }
+            )
+        }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -55,8 +75,8 @@ fun PantallaDetallesProducto(onBack: () -> Unit = {}) {
                     .clip(RoundedCornerShape(24.dp)).background(Color.White)
             ) {
                 AsyncImage(
-                    model = "https://storage-asset.msi.com/global/picture/product/product_1689905089a261a8d64d2b0b391aaadaa03de3850f.webp",
-                    contentDescription = "MSI GE63 Thin",
+                    model = productoActual.urlSegura, // Imagen dinámica de la API o la de MSI
+                    contentDescription = productoActual.nombre,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
                 )
@@ -74,26 +94,35 @@ fun PantallaDetallesProducto(onBack: () -> Unit = {}) {
                     Text("4.8 (de 132 Reviews)", color = Color.Gray, fontSize = 12.sp)
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("MSI GF63 Thin", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = Color.Black)
+
+                // Nombre y precio dinámicos
+                Text(productoActual.nombre, fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = Color.Black)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("$699.00", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = Color(0xFF135041))
+                Text(String.format(Locale.US, "$%.2f", productoActual.precio), fontSize = 22.sp, fontWeight = FontWeight.Bold, color = Color(0xFF135041))
+
                 Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    "Laptop Gamer con procesador i5-12450H y una tarjeta de video RTX 3050 de 4GB y 16GB de ram y un SSD de 1TB, Perfecta para aquellos que les gusta jugar y trabajar a la vez a buen precio.",
-                    color = Color.DarkGray, lineHeight = 22.sp
-                )
+
+                // Descripción dinámica (si es tu MSI original muestra la tuya, si es de la API muestra info genérica)
+                val textoDescripcion = if (productoActual.nombre.contains("MSI")) {
+                    "Laptop Gamer con procesador i5-12450H y una tarjeta de video RTX 3050 de 4GB y 16GB de ram y un SSD de 1TB, Perfecta para aquellos que les gusta jugar y trabajar a la vez a buen precio."
+                } else {
+                    "Producto: ${productoActual.nombre}. Disponible en color ${productoActual.colorSeguro} y tamaño ${productoActual.tallaSegura}. Ideal para tu setup. Rendimiento garantizado por The Aimox Store."
+                }
+
+                Text(textoDescripcion, color = Color.DarkGray, lineHeight = 22.sp)
             }
             Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
 
+// Ahora la barra inferior recibe una función para cuando se presione el botón
 @Composable
-fun BarraInferiorDetalles() {
+fun BarraInferiorDetalles(onAgregarCarrito: () -> Unit = {}) {
     Surface(color = Color.White, shadowElevation = 16.dp) {
         Row(modifier = Modifier.fillMaxWidth().padding(16.dp).navigationBarsPadding(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             Button(
-                onClick = { },
+                onClick = { onAgregarCarrito() }, // <-- Llamamos a la función aquí
                 modifier = Modifier.weight(1f).height(56.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF135041)),
                 shape = RoundedCornerShape(16.dp)
@@ -110,6 +139,7 @@ fun BarraInferiorDetalles() {
     }
 }
 
+// El Preview seguirá funcionando tal cual como a ti te gusta
 @Preview(showBackground = true)
 @Composable
 fun PantallaDetallesProductoPreview() {

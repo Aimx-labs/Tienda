@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mitienda.composables.Data.CartManager
 import java.util.Locale
 
 @Composable
@@ -74,7 +75,10 @@ fun PantallaConfirmacionPago(
                     Spacer(modifier = Modifier.height(24.dp))
 
                     Button(
-                        onClick = onNavigateHome,
+                        onClick = {
+                            CartManager.listaCarrito.clear() // <-- ¡Vaciamos el carrito!
+                            onNavigateHome()
+                        },
                         modifier = Modifier.fillMaxWidth().height(56.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF135041)),
                         shape = RoundedCornerShape(12.dp)
