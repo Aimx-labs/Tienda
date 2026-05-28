@@ -29,20 +29,19 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.mitienda.R
 
-// Paleta de Colores Local para evitar errores de referencias no resueltas
 val FondoPerfil = Color(0xFFF4F6F4)
 val GrisFondoTarjeta = Color(0xFFFFFFFF)
 val RojoAlerta = Color(0xFFB3261E)
-val VerdeEthereal = Color(0xFF135041) // Color institucional de tu tienda
-val TextoPrincipal = Color(0xFF1C1B1F)
-val TextoSecundario = Color(0xFF757575)
+val VerdeEtherealPerfil = Color(0xFF135041) // Renombrado para no chocar
+val TextoPrincipalPerfil = Color(0xFF1C1B1F)
+val TextoSecundarioPerfil = Color(0xFF757575)
 
 @Composable
 fun PantallaPerfil(
     nombreUsuario: String = "Jonathan Alberto",
-    imagenPerfil: Int
-    = R.drawable.amongus,
-    onCerrarSesion: () -> Unit = {}
+    imagenPerfil: Int = R.drawable.amongus,
+    onCerrarSesion: () -> Unit = {},
+    onIrAVender: () -> Unit = {} // <-- Acción recibida
 ) {
     Scaffold(
         containerColor = FondoPerfil,
@@ -61,7 +60,7 @@ fun PantallaPerfil(
             Spacer(modifier = Modifier.height(32.dp))
             SeccionMisPedidos()
             Spacer(modifier = Modifier.height(24.dp))
-            MenuOpciones()
+            MenuOpciones(onIrAVender) // Pasamos la acción al menú
             Spacer(modifier = Modifier.height(40.dp))
             BotonCerrarSesion(onClick = onCerrarSesion)
             Spacer(modifier = Modifier.height(100.dp))
@@ -78,8 +77,8 @@ fun TopBarPerfilEthereal(imagenPerfil: Int) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(Icons.Default.Search, contentDescription = "Buscar", tint = VerdeEthereal, modifier = Modifier.size(24.dp))
-        Text("The Aimox Store", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = VerdeEthereal)
+        Icon(Icons.Default.Search, contentDescription = "Buscar", tint = VerdeEtherealPerfil, modifier = Modifier.size(24.dp))
+        Text("The Aimox Store", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = VerdeEtherealPerfil)
         AsyncImage(
             model = imagenPerfil,
             contentDescription = "Mini Avatar",
@@ -102,27 +101,27 @@ fun CabeceraPerfil(nombre: String, foto: Int) {
                 modifier = Modifier
                     .size(100.dp)
                     .clip(CircleShape)
-                    .border(3.dp, VerdeEthereal, CircleShape)
+                    .border(3.dp, VerdeEtherealPerfil, CircleShape)
             )
             Box(
                 modifier = Modifier
                     .offset(y = 12.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(VerdeEthereal)
+                    .background(VerdeEtherealPerfil)
                     .padding(horizontal = 12.dp, vertical = 4.dp)
             ) {
                 Text("GOLD", color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.Bold)
             }
         }
         Spacer(modifier = Modifier.height(24.dp))
-        Text(nombre, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, color = TextoPrincipal)
+        Text(nombre, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, color = TextoPrincipalPerfil)
     }
 }
 
 @Composable
 fun SeccionMisPedidos() {
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text("Mis Pedidos", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = TextoPrincipal)
+        Text("Mis Pedidos", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = TextoPrincipalPerfil)
         Spacer(modifier = Modifier.height(16.dp))
         Card(
             shape = RoundedCornerShape(16.dp),
@@ -145,8 +144,8 @@ fun SeccionMisPedidos() {
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Column(modifier = Modifier.weight(1f)) {
-                    Text("PEDIDO #8821", fontSize = 12.sp, color = TextoSecundario, fontWeight = FontWeight.Bold)
-                    Text("Alienware 17 R4", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = TextoPrincipal)
+                    Text("PEDIDO #8821", fontSize = 12.sp, color = TextoSecundarioPerfil, fontWeight = FontWeight.Bold)
+                    Text("Alienware 17 R4", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = TextoPrincipalPerfil)
                 }
             }
         }
@@ -154,8 +153,15 @@ fun SeccionMisPedidos() {
 }
 
 @Composable
-fun MenuOpciones() {
+fun MenuOpciones(onIrAVender: () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        // <-- AQUI AGREGAMOS LA OPCION DE VENDER EN EL MENU
+        ItemMenuEthereal(
+            icono = Icons.Default.Add,
+            titulo = "Vender un Artículo",
+            subtitulo = "Publica tus propios productos",
+            onClick = onIrAVender
+        )
         ItemMenuEthereal(
             icono = Icons.Default.LocationOn,
             titulo = "Direcciones de Envío",
@@ -185,7 +191,8 @@ fun ItemMenuEthereal(
     icono: ImageVector,
     titulo: String,
     subtitulo: String,
-    tieneNotificacion: Boolean = false
+    tieneNotificacion: Boolean = false,
+    onClick: () -> Unit = {} // <-- Recibe el clic
 ) {
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -193,7 +200,7 @@ fun ItemMenuEthereal(
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { }
+            .clickable { onClick() } // <-- Aplica el clic a la tarjeta
     ) {
         Row(
             modifier = Modifier
@@ -208,12 +215,12 @@ fun ItemMenuEthereal(
                     .background(Color(0xFFF4F6F4)),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(imageVector = icono, contentDescription = null, tint = VerdeEthereal, modifier = Modifier.size(20.dp))
+                Icon(imageVector = icono, contentDescription = null, tint = VerdeEtherealPerfil, modifier = Modifier.size(20.dp))
             }
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = titulo, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = TextoPrincipal)
-                Text(text = subtitulo, fontSize = 12.sp, color = TextoSecundario)
+                Text(text = titulo, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = TextoPrincipalPerfil)
+                Text(text = subtitulo, fontSize = 12.sp, color = TextoSecundarioPerfil)
             }
             if (tieneNotificacion) {
                 Box(modifier = Modifier.size(8.dp).clip(CircleShape).background(RojoAlerta))
@@ -241,18 +248,6 @@ fun BotonCerrarSesion(onClick: () -> Unit = {}) {
 
 @Preview(showBackground = true)
 @Composable
-fun PantallaPerfilJonathanPreview() {
-    PantallaPerfil(nombreUsuario = "Jonathan Alberto")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PantallaPerfilDanielPreview() {
-    PantallaPerfil(nombreUsuario = "Daniel López")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PantallaPerfilGenaroPreview() {
-    PantallaPerfil(nombreUsuario = "Genaro Hinojoza")
+fun PantallaPerfilPreview() {
+    PantallaPerfil()
 }

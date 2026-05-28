@@ -33,7 +33,8 @@ fun AppNavegacion() {
     var usuarioActual by remember { mutableStateOf("Invitado") }
     Scaffold(
         bottomBar = {
-            if (rutaActual != "login" && rutaActual != "registro") {
+            // Se agregó "vender" para que también oculte la barra abajo
+            if (rutaActual != "login" && rutaActual != "registro" && rutaActual != "vender") {
                 BarraNavegacionReal(navController, rutaActual)
             }
         }
@@ -41,7 +42,7 @@ fun AppNavegacion() {
         NavHost(
             navController = navController,
             startDestination = "login",
-            modifier = if (rutaActual == "login" || rutaActual == "registro") Modifier else Modifier.padding(paddingValues)
+            modifier = if (rutaActual == "login" || rutaActual == "registro" || rutaActual == "vender") Modifier else Modifier.padding(paddingValues)
         ) {
 
             composable("login") {
@@ -52,29 +53,22 @@ fun AppNavegacion() {
                             popUpTo("login") { inclusive = true }
                         }
                     },
-                    onIrARegistro = { // <-- Acción conectada
-                        navController.navigate("registro")
-                    }
+                    onIrARegistro = { navController.navigate("registro") }
                 )
             }
-            // <-- AQUÍ AGREGAMOS LA NUEVA RUTA DE REGISTRO
+
             composable("registro") {
                 PantallaRegistro(
-                    onRegistroExitoso = {
-                        // Si se registró bien, lo regresamos al login para que entre
-                        navController.popBackStack()
-                    },
-                    onIrALogin = {
-                        // Si solo se equivocó de botón, lo regresamos al login
-                        navController.popBackStack()
-                    }
+                    onRegistroExitoso = { navController.popBackStack() },
+                    onIrALogin = { navController.popBackStack() }
                 )
             }
 
             composable("principal") {
                 PantallaPrincipal(
                     onProductoClick = { navController.navigate("detalles_producto") },
-                    onPerfilClick = { navController.navigate("perfil") }
+                    onPerfilClick = { navController.navigate("perfil") },
+                    onIrAVender = { navController.navigate("vender") } // <-- Acción conectada
                 )
             }
 
@@ -92,10 +86,6 @@ fun AppNavegacion() {
                     },
                     onPerfilClick = { navController.navigate("perfil") }
                 )
-            }
-
-            composable("perfil") {
-                PantallaPerfil()
             }
 
             composable("detalles_producto") {
@@ -119,15 +109,28 @@ fun AppNavegacion() {
                     }
                 )
             }
+
+            // Perfil duplicado eliminado. Este es el correcto:
             composable("perfil") {
                 PantallaPerfil(
-                    nombreUsuario = usuarioActual, // Toma el nombre (Daniel o Genaro)
+                    nombreUsuario = usuarioActual,
                     imagenPerfil = com.example.mitienda.R.drawable.amongus,
                     onCerrarSesion = {
-                        // Al cerrar sesión, reiniciamos el usuario y volvemos al login
                         usuarioActual = "Invitado"
                         navController.navigate("login") {
                             popUpTo(0) { inclusive = true }
+                        }
+                    },
+                    onIrAVender = { navController.navigate("vender") } // <-- Acción conectada
+                )
+            }
+
+            // <-- NUEVA RUTA: LA PANTALLA DE VENDER
+            composable("vender") {
+                PantallaVender(
+                    onPublicacionExitosa = {
+                        navController.navigate("principal") {
+                            popUpTo("vender") { inclusive = true }
                         }
                     }
                 )

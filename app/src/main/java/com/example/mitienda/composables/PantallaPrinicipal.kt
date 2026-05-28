@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -34,15 +35,29 @@ import kotlinx.coroutines.withContext
 import java.util.Locale
 
 private val FondoPrincipal = Color(0xFFF4F6F4)
+val VerdeEthereal = Color(0xFF135041) // Añadido para que no marque error
+val TextoPrincipal = Color(0xFF1C1B1F)
+val TextoSecundario = Color(0xFF757575)
 
 @Composable
 fun PantallaPrincipal(
     onProductoClick: () -> Unit = {},
-    onPerfilClick: () -> Unit = {}
+    onPerfilClick: () -> Unit = {},
+    onIrAVender: () -> Unit = {} // <-- Recibe la orden de ir a vender
 ) {
     Scaffold(
         containerColor = FondoPrincipal,
-        topBar = { TopBarPrincipalEthereal(onPerfilClick = onPerfilClick) }
+        topBar = { TopBarPrincipalEthereal(onPerfilClick = onPerfilClick) },
+        // Botón flotante para Vender
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = onIrAVender,
+                containerColor = VerdeEthereal,
+                contentColor = Color.White
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Vender Artículo")
+            }
+        }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -125,7 +140,6 @@ fun SeccionNovedades(onProductoClick: () -> Unit = {}) {
     var productosApi by remember { mutableStateOf<List<Articulo>>(emptyList()) }
     var cargando by remember { mutableStateOf(true) }
 
-    // Descarga desde tu API de Render
     LaunchedEffect(Unit) {
         try {
             val resultado = withContext(Dispatchers.IO) {
@@ -163,7 +177,6 @@ fun SeccionNovedades(onProductoClick: () -> Unit = {}) {
                 modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 24.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Si la API falla o está vacía (como en el Preview), mostramos tus productos fijos
                 if (productosApi.isEmpty()) {
                     val productosDeRespaldo = listOf(
                         Articulo(nombre = "Razer DEATHADDER", precio = 35.00f, imagenUrl = "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcReGt6Wj9lJncAz3VaQ6_d-fxRNjODMsxXe3yw6QsiH9xOeh1iL5I7xAk7ZmC6Lf3Ty7DXBOh_XzdxokS0IWnm3KP2dUHdQ4wxGV8C0gij7i5vcy0_k5fadm_a8GbUG1rMMUAAUfw&usqp=CAc"),
@@ -178,7 +191,6 @@ fun SeccionNovedades(onProductoClick: () -> Unit = {}) {
                         })
                     }
                 } else {
-                    // Si la API funciona, mostramos los productos reales
                     productosApi.forEach { producto ->
                         TarjetaProductoMini(articulo = producto, onClick = {
                             CartManager.articuloSeleccionado = producto
@@ -191,7 +203,6 @@ fun SeccionNovedades(onProductoClick: () -> Unit = {}) {
     }
 }
 
-// Adaptada para recibir un Articulo y así poder guardarlo en el CartManager
 @Composable
 fun TarjetaProductoMini(articulo: Articulo, onClick: () -> Unit = {}) {
     Column(
@@ -268,10 +279,4 @@ fun SeccionNewsletter(modifier: Modifier = Modifier) {
             Text("Suscribirse", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White)
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PantallaPrincipalPreview() {
-    PantallaPrincipal()
 }
